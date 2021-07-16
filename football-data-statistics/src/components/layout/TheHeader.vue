@@ -64,7 +64,7 @@ header {
   top: 0px;
   left: 0;
   width: 100%;
-  height: 70px;
+  height: 80px;
   z-index: 2;
   background: linear-gradient(to right, #2c3e50, #4ca1af);
   -webkit-box-shadow: 0px 5px 5px 1px #000000;
@@ -78,9 +78,12 @@ header {
 }
 img {
   padding-top: 15px;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   color: white;
+}
+img:hover {
+  transform: scale(1.1);
 }
 .container {
   float: left;
@@ -95,13 +98,15 @@ img {
   font-weight: bold;
   padding-left: 10px;
   padding-top: 5px;
-  height: 20px;
+  height: 30px;
+  width: calc(100% - 70px);
+  text-align: center;
 }
 .navigation {
   position: absolute;
-  left: 40px;
+  top: 20px;
   height: 50px;
-  padding-top: 18px;
+  width: calc(100% - 70px);
 }
 ul {
   list-style: none;
@@ -115,6 +120,9 @@ ul {
 
 li {
   margin: 0 2rem;
+}
+li:hover {
+  transform: scale(1.1);
 }
 a {
   text-decoration: none;
@@ -130,7 +138,7 @@ a:hover,
 a:active,
 a.active {
   color: wheat;
-  border-color: black;
+  border-color: wheat;
   border-radius: 10px;
 }
 </style>

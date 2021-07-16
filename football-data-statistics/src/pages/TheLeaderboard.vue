@@ -1,7 +1,9 @@
 <template>
-  <div v-if="errorMessage" class="errorMessage">{{ errorMessage }}</div>
+  <base-card v-if="errorMessage">
+    <div class="errorMessage">{{ errorMessage }}</div>
+  </base-card>
   <base-card v-else>
-    <div v-for="stand in standings" :key="stand.stage" class="main">
+    <div v-for="stand in standings" :key="setKey(stand.group)" class="main">
       <div class="group_name" v-if="stand !== null">
         <strong>{{ stand.group }}</strong>
       </div>
@@ -22,19 +24,25 @@
         </thead>
         <tbody v-for="table in stand.table" :key="table.position">
           <tr>
-            <td>{{ table.position }}.</td>
-            <td class="club">
-              <span><img :src="table.team.crestUrl" alt=""/></span>
-              <span>{{ table.team.name }}</span>
+            <td class="col">{{ table.position }}.</td>
+            <td class="club" :title="table.team.name">
+              <router-link
+                :to="
+                  '/leaderboard/' + setKey(stand.group) + '/' + table.position
+                "
+              >
+                <span><img :src="table.team.crestUrl" alt=""/></span>
+                <span>{{ table.team.name }}</span>
+              </router-link>
             </td>
-            <td>{{ table.playedGames }}</td>
-            <td>{{ table.won }}</td>
-            <td>{{ table.draw }}</td>
-            <td>{{ table.lost }}</td>
-            <td>{{ table.goalsFor }}</td>
-            <td>{{ table.goalsAgainst }}</td>
-            <td>{{ table.goalDifference }}</td>
-            <td>
+            <td class="col">{{ table.playedGames }}</td>
+            <td class="col">{{ table.won }}</td>
+            <td class="col">{{ table.draw }}</td>
+            <td class="col">{{ table.lost }}</td>
+            <td class="col">{{ table.goalsFor }}</td>
+            <td class="col">{{ table.goalsAgainst }}</td>
+            <td class="col">{{ table.goalDifference }}</td>
+            <td class="col">
               <strong>{{ table.points }}</strong>
             </td>
           </tr>
@@ -50,12 +58,23 @@ export default {
     standings() {
       return this.$store.getters["lead/getStandings"];
     },
+    selectedId() {
+      return this.$store.getters["comps/selectedId"];
+    },
     errorMessage() {
       return this.$store.getters["lead/getError"];
     },
   },
+  methods: {
+    setKey(key) {
+      if (key !== null) {
+        return key;
+      }
+      return "1";
+    },
+  },
   created() {
-    return this.$store.dispatch("lead/getLeaderBoard");
+    return this.$store.dispatch("lead/getLeaderBoard", { id: this.selectedId });
   },
 };
 </script>
@@ -72,6 +91,7 @@ table {
   font-size: 1.5rem;
   border-collapse: inherit;
   border-spacing: 0;
+  padding: 0 10px 10px 10px;
 }
 table thead {
   background-color: #fbfbfb;
@@ -95,21 +115,31 @@ table tbody td {
 img {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  background-color: transparent;
   margin-right: 15px;
 }
 
+.col {
+  max-width: 30px;
+}
+
 .club {
-  max-width: 250px;
+  min-width: 250px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+a {
+  color: #2c3e50;
+  text-decoration: none;
 }
 
 .errorMessage {
   padding-top: 40px;
-  color: white;
+  color: #2c3e50;
   font-size: 30px;
 }
 

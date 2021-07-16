@@ -7,19 +7,34 @@ export default {
       selectedId: null,
       selectedName: null,
       menuIsOpen: false,
+      isLoading: true,
+      errorInit: null,
     };
   },
   mutations: {
     async loadTierOne(state) {
-      const response = await axios
-        .get("/competitions?plan=TIER_ONE")
-        .then((res) => res.data);
-      state.competitions = response.competitions;
-      state.selectedId = response.competitions[0].id;
-      state.selectedName =
-        response.competitions[0].area.name +
-        " " +
-        response.competitions[0].name;
+      state.isLoading = true;
+      try {
+        const response = await axios
+          .get("/competitions?plan=TIER_ONE")
+          .then((res) => res.data)
+          .catch((error) => {
+            throw new Error(`${error.response.data.message}`);
+          });
+        state.competitions = response.competitions;
+        state.selectedId = response.competitions[0].id;
+        state.selectedName =
+          response.competitions[0].area.name +
+          " " +
+          response.competitions[0].name;
+        state.errorInit = null;
+
+        setTimeout(() => {
+          state.isLoading = false;
+        }, 2000);
+      } catch (err) {
+        state.errorInit = err;
+      }
     },
     setCompetition(state, payload) {
       const id = payload.id;
@@ -38,6 +53,14 @@ export default {
       context.commit("loadTierOne");
     },
     setCompetition(context, payload) {
+      const leaderboardPath = new RegExp("^/leaderboard.*$");
+      if (leaderboardPath.test(payload.path)) {
+        context.dispatch(
+          "lead/getLeaderBoard",
+          { id: payload.id },
+          { root: true }
+        );
+      }
       context.commit("setCompetition", payload);
     },
     openCloseModal(context) {
@@ -56,6 +79,9 @@ export default {
     },
     menuIsOpen(state) {
       return state.menuIsOpen;
+    },
+    isLoading(state) {
+      return state.isLoading;
     },
   },
 };

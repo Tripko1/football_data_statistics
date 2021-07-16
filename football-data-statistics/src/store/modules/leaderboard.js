@@ -5,6 +5,7 @@ export default {
     return {
       standings: [],
       error: null,
+      selectedTeam: null,
     };
   },
   mutations: {
@@ -23,16 +24,19 @@ export default {
         state.standings = response.standings;
         state.error = null;
       } catch (err) {
-        console.log(err);
         state.error = err;
       }
     },
+    setSelectedTeam(state, payload) {
+      state.selectedTeam = { ...payload.selectedTeam };
+    },
   },
   actions: {
-    getLeaderBoard(context) {
-      const id = context.rootGetters["comps/selectedId"];
-      const payload = { id: id };
+    getLeaderBoard(context, payload) {
       context.commit("getLeaderBoard", payload);
+    },
+    setSelectedTeam(context, payload) {
+      context.commit("setSelectedTeam", payload);
     },
   },
   getters: {
@@ -41,6 +45,9 @@ export default {
     },
     getError(state) {
       return state.error;
+    },
+    getSelectedTeam(state) {
+      return state.selectedTeam;
     },
   },
 };
