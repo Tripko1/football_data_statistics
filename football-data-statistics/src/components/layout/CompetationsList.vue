@@ -1,7 +1,12 @@
 <template>
   <div>
     <ul>
-      <li v-for="c in competitions" :key="c.id">
+      <li
+        v-for="c in competitions"
+        :key="c.id"
+        :class="className(c.id)"
+        @click="selectCompetition(c.id)"
+      >
         <span
           ><strong>{{ c.area.name }} {{ c.name }}</strong></span
         >
@@ -13,6 +18,27 @@
 <script>
 export default {
   props: ["competitions"],
+  computed: {
+    selectedId() {
+      return this.$store.getters["comps/selectedId"];
+    },
+  },
+  methods: {
+    className(id) {
+      if (id === this.selectedId) {
+        return "listItem active";
+      }
+      return "listItem";
+    },
+    selectCompetition(selectedId) {
+      this.$store
+        .dispatch("comps/setCompetition", { id: selectedId })
+        .then(() => {
+          //const path = this.$route.fullPath;
+          return this.$router.push("/");
+        });
+    },
+  },
 };
 </script>
 
@@ -23,23 +49,24 @@ div {
   left: 10px;
   width: 400px;
   background-color: white;
-  max-height: 500px;
+  max-height: 650px;
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 10px;
   -webkit-box-shadow: 5px 5px 15px 2px #ccc;
   box-shadow: 5px 5px 15px 2px #ccc;
+  z-index: 1;
 }
 ul {
   background-color: #fff;
   border-radius: 0 0 12px 12px;
-  padding: 15px 15px 20px;
+  padding: 15px 20px 20px;
   display: grid;
   row-gap: 8px;
 }
 
-li {
-  align-items: left;
+.listItem {
+  align-items: center;
   padding: 10px 30px 10px 10px;
   overflow: hidden;
   border-radius: 10px;
@@ -50,10 +77,16 @@ li {
   background-color: #fff;
 }
 
-li:hover {
-  transform: scale(1.2);
+.listItem:hover {
+  transform: scale(1.1);
   box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);
 }
+
+.active {
+  border: 3px solid black;
+  background-color: #4ca1af;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 20px;
@@ -67,12 +100,12 @@ li:hover {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #4ca1af;
+  background: rgb(169, 169, 169);
   border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #2c3e50;
+  background: rgb(96, 96, 96);
 }
 </style>

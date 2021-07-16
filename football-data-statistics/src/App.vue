@@ -6,25 +6,18 @@
 </template>
 
 <script>
-import axios from "./axios-instance";
 import TheHeader from "./components/layout/TheHeader.vue";
 export default {
   components: { TheHeader },
-  data() {
-    return {
-      competitions: [],
-    };
-  },
-  methods: {
-    async loadTierOne() {
-      const response = await axios
-        .get("/competitions?plan=TIER_ONE")
-        .then((res) => res.data);
-      this.competitions = response.competitions;
+  computed: {
+    competitions() {
+      return this.$store.getters["comps/competitions"];
     },
   },
-  created() {
-    this.loadTierOne();
+  beforeCreate() {
+    this.$store
+      .dispatch("comps/loadTierOne_Action")
+      .then(() => this.$router.push("/"));
   },
 };
 </script>
