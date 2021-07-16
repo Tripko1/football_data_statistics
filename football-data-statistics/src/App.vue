@@ -1,7 +1,8 @@
 <template>
+  <the-spinner v-if="isLoading"></the-spinner>
   <the-header :competitions="competitions"></the-header>
   <main>
-    <router-view></router-view>
+    <router-view v-if="!isLoading"></router-view>
   </main>
 </template>
 
@@ -12,6 +13,9 @@ export default {
   computed: {
     competitions() {
       return this.$store.getters["comps/competitions"];
+    },
+    isLoading() {
+      return this.$store.getters["comps/isLoading"];
     },
   },
   beforeCreate() {
@@ -41,5 +45,23 @@ main {
   background-image: url("./assets/soccer.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
+}
+.loading-mask {
+  display: none;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 9995;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.loading-mask img {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  z-index: 9999;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
 }
 </style>

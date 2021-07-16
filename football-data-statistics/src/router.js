@@ -3,6 +3,7 @@ import TheHome from "./pages/TheHome.vue";
 import TheLeaderboard from "./pages/TheLeaderboard.vue";
 import MatchList from "./pages/MatchList.vue";
 import TopShooters from "./pages/TopShooters.vue";
+import TeamInfo from "./components/leaderboard/TeamInfo.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,6 +23,10 @@ const router = createRouter({
     {
       path: "/topshooters",
       component: TopShooters,
+    },
+    {
+      path: "/leaderboard/:group/:pos",
+      component: TeamInfo,
     },
   ],
   linkActiveClass: "active",

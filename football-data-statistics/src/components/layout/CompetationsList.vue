@@ -32,11 +32,11 @@ export default {
     },
     selectCompetition(selectedId) {
       this.$store
-        .dispatch("comps/setCompetition", { id: selectedId })
-        .then(() => {
-          //const path = this.$route.fullPath;
-          return this.$router.push("/");
-        });
+        .dispatch("comps/setCompetition", {
+          id: selectedId,
+          path: this.$route.fullPath,
+        })
+        .then(() => this.$router.push("/leaderboard"));
     },
   },
 };
@@ -45,11 +45,11 @@ export default {
 <style scoped>
 div {
   position: absolute;
-  top: 75px;
+  top: 85px;
   left: 10px;
   width: 400px;
   background-color: white;
-  max-height: 650px;
+  max-height: 640px;
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 10px;
