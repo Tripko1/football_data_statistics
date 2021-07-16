@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <div class="title">
-        My Title
+        {{ title }}
       </div>
       <div class="navigation">
         <nav>
@@ -40,12 +40,19 @@ export default {
   data() {
     return {
       hamburger: require("../../assets/menu.svg"),
-      menuIsOpen: false,
     };
+  },
+  computed: {
+    title() {
+      return this.$store.getters["comps/selectedName"];
+    },
+    menuIsOpen() {
+      return this.$store.getters["comps/menuIsOpen"];
+    },
   },
   methods: {
     openCloseMenu() {
-      this.menuIsOpen = !this.menuIsOpen;
+      return this.$store.dispatch("comps/openCloseModal");
     },
   },
 };

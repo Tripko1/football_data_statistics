@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import App from "./App.vue";
+import TheHome from "./pages/TheHome.vue";
 import TheLeaderboard from "./pages/TheLeaderboard.vue";
 import MatchList from "./pages/MatchList.vue";
 import TopShooters from "./pages/TopShooters.vue";
@@ -9,7 +9,7 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      component: App,
+      component: TheHome,
     },
     {
       path: "/leaderboard",
