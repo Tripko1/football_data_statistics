@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import ThePagination from "../components/UI/ThePagination.vue";
+import ThePagination from "../components/matches/ThePagination.vue";
 export default {
   components: {
     ThePagination,
