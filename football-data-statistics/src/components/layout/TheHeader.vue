@@ -24,18 +24,18 @@
       </div>
     </div>
   </header>
-  <competations-list
+  <competitions-list
     v-if="menuIsOpen"
     :competitions="competitions"
-  ></competations-list>
+  ></competitions-list>
 </template>
 
 <script>
-import CompetationsList from "./CompetationsList.vue";
+import CompetitionsList from "./CompetitionsList.vue";
 export default {
   props: ["competitions"],
   components: {
-    CompetationsList,
+    CompetitionsList,
   },
   data() {
     return {

@@ -36,7 +36,13 @@ export default {
           id: selectedId,
           path: this.$route.fullPath,
         })
-        .then(() => this.$router.push("/leaderboard"));
+        .then(() => {
+          if (this.$route === "/leaderboard") {
+            return this.$router.push("/leaderboard");
+          } else if (this.$route === "/matches") {
+            return this.$router.push("/matches");
+          }
+        });
     },
   },
 };

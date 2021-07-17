@@ -10,22 +10,27 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "Home",
       component: TheHome,
     },
     {
       path: "/leaderboard",
+      name: "Leaderboard",
       component: TheLeaderboard,
     },
     {
       path: "/matches",
+      name: "Matches",
       component: MatchList,
     },
     {
       path: "/topshooters",
+      name: "Topshooters",
       component: TopShooters,
     },
     {
-      path: "/leaderboard/:group/:pos",
+      path: "/team/:teamId",
+      name: "team details",
       component: TeamInfo,
     },
   ],
