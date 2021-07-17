@@ -4,6 +4,7 @@ import TheLeaderboard from "./pages/TheLeaderboard.vue";
 import MatchList from "./pages/MatchList.vue";
 import TopShooters from "./pages/TopShooters.vue";
 import TeamInfo from "./components/leaderboard/TeamInfo.vue";
+import PlayerDetails from "./components/TopShooters/PlayerDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: "/team/:teamId",
       name: "team details",
       component: TeamInfo,
+    },
+    {
+      path: "/player/:playerId",
+      name: "player details",
+      component: PlayerDetails,
     },
   ],
   linkActiveClass: "active",

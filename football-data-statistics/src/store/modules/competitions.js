@@ -54,7 +54,8 @@ export default {
     },
     setCompetition(context, payload) {
       const leaderboardPath = new RegExp("^/leaderboard.*$");
-      const matchesPath = new RegExp("^/matches");
+      const matchesPath = new RegExp("^/matches.*$");
+      const scorersPath = new RegExp("^/topshooters.*$");
       if (leaderboardPath.test(payload.path)) {
         context.dispatch(
           "lead/getLeaderBoard",
@@ -64,6 +65,12 @@ export default {
       } else if (matchesPath.test(payload.path)) {
         context.dispatch(
           "match/allMatches",
+          { id: payload.id },
+          { root: true }
+        );
+      } else if (scorersPath.test(payload.path)) {
+        context.dispatch(
+          "top/loadTopShooters",
           { id: payload.id },
           { root: true }
         );

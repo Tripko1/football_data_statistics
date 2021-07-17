@@ -61,8 +61,11 @@ export default {
     getSelectedTeam(state) {
       return state.selectedTeam;
     },
-    getColor(state) {
+    getColor1(state) {
       return state.selectedTeam.clubColors.split("/")[0];
+    },
+    getColor2(state) {
+      return state.selectedTeam.clubColors.split("/")[1];
     },
   },
 };

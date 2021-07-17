@@ -1,6 +1,12 @@
 <template>
   <base-card v-if="selectedTeam">
-    <div class="container" :style="{ 'background-color': color }">
+    <div
+      class="container"
+      :style="{
+        'background-color': color1.split(' ').length > 2 ? 'white' : color1,
+        color: color1.split(' ').length > 2 ? '#2c3e50;' : color2,
+      }"
+    >
       <span class="back" @click="goBack">
         <img class="left_arrow" :src="leftArrow" alt="Back" />
       </span>
@@ -24,13 +30,13 @@
           <span class="left">
             <img class="smallImg" :src="stadium" alt="stadium" />
             <span class="center-left">
-              {{ selectedTeam.venue }}
+              <strong>{{ selectedTeam.venue }}</strong>
             </span>
           </span>
           <span class="left">
             <img class="smallImg" :src="phone" alt="stadium" />
             <span class="center-left">
-              {{ selectedTeam.phone }}
+              <strong>{{ selectedTeam.phone }}</strong>
             </span>
           </span>
         </div>
@@ -42,23 +48,40 @@
               :href="selectedTeam.website"
               style="textDecoration: none"
             >
-              {{ selectedTeam.website }}
+              <strong>{{ selectedTeam.website }}</strong>
             </a>
           </span>
           <span class="left">
             <img class="smallImg" :src="address" alt="stadium" />
             <span class="center-left">
-              {{ selectedTeam.address }}
+              <strong>{{ selectedTeam.address }}</strong>
             </span>
           </span>
         </div>
+      </div>
+    </div>
+    <div v-if="selectedTeam.squad.length > 0" class="players">
+      <div class="player" v-for="s in selectedTeam.squad" :key="s.id">
+        <router-link :to="'/player/' + s.id">
+          <football-kit
+            :playerName="s.name"
+            :shirtNumber="s.shirtNumber"
+            :role="s.role"
+            :color1="color1"
+            :color2="color2"
+          ></football-kit>
+        </router-link>
       </div>
     </div>
   </base-card>
 </template>
 
 <script>
+import FootballKit from "./FootballKit.vue";
 export default {
+  components: {
+    FootballKit,
+  },
   data() {
     return {
       leftArrow: require("../../assets/left_arrow.gif"),
@@ -75,8 +98,11 @@ export default {
     standings() {
       return this.$store.getters["lead/getStandings"];
     },
-    color() {
-      return this.$store.getters["lead/getColor"];
+    color1() {
+      return this.$store.getters["lead/getColor1"];
+    },
+    color2() {
+      return this.$store.getters["lead/getColor2"];
     },
   },
   methods: {
@@ -98,6 +124,7 @@ export default {
 .container {
   width: 100%;
   height: 200px;
+  border-bottom: 3px solid black;
 }
 .circle {
   display: inline-block;
@@ -153,7 +180,7 @@ h1 {
 .back {
   position: absolute;
   top: 100px;
-  right: calc(10% + 10px);
+  right: calc(10% + 20px);
   cursor: pointer;
 }
 .smallImg {
@@ -164,8 +191,40 @@ h1 {
 .center-left {
   display: flex;
   padding: 15px 0 0 15px;
-
+  text-decoration: none;
+}
+a {
   color: #2c3e50;
   text-decoration: none;
+}
+.players {
+  width: 100%;
+  height: calc(100% - 220px);
+  overflow: auto;
+}
+.player {
+  width: 20%;
+  float: left;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(96, 96, 96);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(96, 96, 96) rgb(169, 169, 169);
 }
 </style>
