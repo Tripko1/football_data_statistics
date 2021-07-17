@@ -27,8 +27,20 @@ export default {
         state.error = err;
       }
     },
-    setSelectedTeam(state, payload) {
-      state.selectedTeam = { ...payload.selectedTeam };
+    async setSelectedTeam(state, payload) {
+      try {
+        const id = payload.id;
+        const url = "/teams/" + id;
+        const response = await axios
+          .get(url)
+          .then((res) => res.data)
+          .catch((error) => {
+            throw new Error(`${error.response.data.message}`);
+          });
+        state.selectedTeam = response;
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
   actions: {
@@ -48,6 +60,9 @@ export default {
     },
     getSelectedTeam(state) {
       return state.selectedTeam;
+    },
+    getColor(state) {
+      return state.selectedTeam.clubColors.split("/")[0];
     },
   },
 };

@@ -26,11 +26,7 @@
           <tr>
             <td class="col">{{ table.position }}.</td>
             <td class="club" :title="table.team.name">
-              <router-link
-                :to="
-                  '/leaderboard/' + setKey(stand.group) + '/' + table.position
-                "
-              >
+              <router-link :to="'/team/' + table.team.id">
                 <span><img :src="table.team.crestUrl" alt=""/></span>
                 <span>{{ table.team.name }}</span>
               </router-link>

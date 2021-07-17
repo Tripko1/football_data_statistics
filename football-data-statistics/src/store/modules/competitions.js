@@ -54,9 +54,16 @@ export default {
     },
     setCompetition(context, payload) {
       const leaderboardPath = new RegExp("^/leaderboard.*$");
+      const matchesPath = new RegExp("^/matches");
       if (leaderboardPath.test(payload.path)) {
         context.dispatch(
           "lead/getLeaderBoard",
+          { id: payload.id },
+          { root: true }
+        );
+      } else if (matchesPath.test(payload.path)) {
+        context.dispatch(
+          "match/allMatches",
           { id: payload.id },
           { root: true }
         );
