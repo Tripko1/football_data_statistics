@@ -33,6 +33,33 @@ const setPagintation = (state) => {
   }
 };
 
+const getFilteredMatches = (state, arr, selectValue) => {
+  state.filteredMatches = [];
+  const m = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (selectValue >= 0) {
+      if (
+        arr[i].score.fullTime.homeTeam !== null &&
+        arr[i].score.fullTime.homeTeam + arr[i].score.fullTime.awayTeam >=
+          selectValue
+      ) {
+        m.push(arr[i]);
+      }
+    } else {
+      m.push(arr[i]);
+    }
+  }
+  state.filteredMatches = m;
+  state.totalCount = m.length;
+  setPagintation(state);
+
+  if (state.totalPages < state.selectedPage) {
+    state.selectedPage = 1;
+    state.startPos = 1;
+  }
+  loadMatches(state, "filter");
+};
+
 export default {
   namespaced: true,
   state() {
@@ -86,14 +113,22 @@ export default {
       const value = payload.value;
       state.selectedPage = value;
       const inputValue = payload.inputValue;
+      const selectValue = payload.selectValue;
+      console.log(selectValue);
       if (inputValue.length > 3) {
         loadMatches(state, "filter");
       } else {
-        loadMatches(state, "no-filter");
+        if (selectValue >= 0) {
+          getFilteredMatches(state, state.filteredMatches, selectValue);
+        } else {
+          loadMatches(state, "no-filter");
+        }
       }
     },
     filterMatches(state, payload) {
       const value = payload.value;
+      const selectValue = payload.selectValue;
+
       if (value.length > 3) {
         const m = [];
         state.matches.find((match) => {
@@ -121,6 +156,14 @@ export default {
           state.startPos = 1;
         }
         loadMatches(state, "no-filter");
+      }
+
+      if (selectValue !== "") {
+        if (value.length > 3) {
+          getFilteredMatches(state, state.filteredMatches, selectValue);
+        } else {
+          getFilteredMatches(state, state.matches, selectValue);
+        }
       }
     },
   },

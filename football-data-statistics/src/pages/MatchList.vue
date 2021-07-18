@@ -1,7 +1,23 @@
 <template>
   <base-card>
     <div class="search-container">
-      <the-search @search-value="searchValue"></the-search>
+      <div class="filter-left">
+        <div class="half">Most Goals</div>
+        <div class="half">
+          <select-filter
+            @select-value="selectedValue"
+            :searchValue="inputValue"
+          ></select-filter>
+        </div>
+      </div>
+      <the-search
+        @search-value="searchValue"
+        :selectValue="selectValue"
+      ></the-search>
+      <div class="filter-right">
+        <div class="half"></div>
+        <div class="half"></div>
+      </div>
     </div>
     <div class="matches">
       <div class="table" v-if="matches">
@@ -13,25 +29,31 @@
         ></table-row>
       </div>
     </div>
-    <the-pagination :inputValue="inputValue"></the-pagination>
+    <the-pagination
+      :inputValue="inputValue"
+      :selectValue="selectValue"
+    ></the-pagination>
   </base-card>
 </template>
 
 <script>
 import ThePagination from "../components/matches/ThePagination.vue";
-import TheSearch from "../components/Search/TheSearch.vue";
+import TheSearch from "../components/Filters/TheSearch.vue";
 import TableHeader from "../components/matches/TableHeader.vue";
 import TableRow from "../components/matches/TableRow.vue";
+import SelectFilter from "../components/Filters/SelectFilter.vue";
 export default {
   components: {
     TableRow,
     ThePagination,
     TheSearch,
     TableHeader,
+    SelectFilter,
   },
   data() {
     return {
       inputValue: "",
+      selectValue: "",
     };
   },
   computed: {
@@ -46,6 +68,9 @@ export default {
     searchValue(input) {
       this.inputValue = input;
     },
+    selectedValue(value) {
+      this.selectValue = value;
+    },
   },
   created() {
     this.$store.dispatch("match/allMatches", { id: this.selectedId });
@@ -57,6 +82,7 @@ export default {
 .search-container {
   width: 100%;
   height: 50px;
+  display: inline-flex;
 }
 .matches {
   height: calc(100% - 140px);
@@ -68,6 +94,27 @@ export default {
 .table {
   padding: 5px;
   height: calc(100% - 10px);
+}
+
+.filter-left {
+  float: left;
+  width: 150px;
+  min-width: 50px;
+  height: 50px;
+  background-color: transparent;
+}
+
+.filter-right {
+  float: right;
+  width: 150px;
+  min-width: 50px;
+  height: 50px;
+  background-color: transparent;
+}
+
+.half {
+  width: 100%;
+  height: 25px;
 }
 
 /* width */

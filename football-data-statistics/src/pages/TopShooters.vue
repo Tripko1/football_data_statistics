@@ -28,7 +28,7 @@
 
 <script>
 import ThePagination from "../components/TopShooters/ThePagination.vue";
-import TheSearch from "../components/Search/TheSearch.vue";
+import TheSearch from "../components/Filters/TheSearch.vue";
 import ScorerHeader from "../components/TopShooters/ScorerHeader.vue";
 import ScorerRow from "../components/TopShooters/ScorerRow.vue";
 export default {
