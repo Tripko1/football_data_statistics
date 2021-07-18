@@ -15,6 +15,7 @@
 
 <script>
 export default {
+  props: ["inputValue"],
   computed: {
     totalPages() {
       return this.$store.getters["match/getTotalPages"];
@@ -31,7 +32,10 @@ export default {
       this.$store.dispatch("match/decrement", { value: 1 });
     },
     selectPage(value) {
-      this.$store.dispatch("match/selectPage", { value: value });
+      this.$store.dispatch("match/selectPage", {
+        value: value,
+        inputValue: this.inputValue,
+      });
     },
     getClass(num) {
       if (num === this.selectedPage) {

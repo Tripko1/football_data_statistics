@@ -61,9 +61,6 @@ export default {
       tie: require("../../assets/tie.png"),
     };
   },
-  created() {
-    console.log(this.playerName);
-  },
 };
 </script>
 

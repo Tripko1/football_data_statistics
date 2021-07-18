@@ -3,53 +3,30 @@
     <div class="errorMessage">{{ errorMessage }}</div>
   </base-card>
   <base-card v-else>
-    <div v-for="stand in standings" :key="setKey(stand.group)" class="main">
+    <div v-for="stand in standings" :key="setKey(stand.group)">
       <div class="group_name" v-if="stand !== null">
         <strong>{{ stand.group }}</strong>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <td>Position</td>
-            <td>Club</td>
-            <td>Played</td>
-            <td>Won</td>
-            <td>Drawn</td>
-            <td>Lost</td>
-            <td><abbr title="Goals For">GF</abbr></td>
-            <td><abbr title="Goals Against">GA</abbr></td>
-            <td><abbr title="Goals Difference">GD</abbr></td>
-            <td>Points</td>
-          </tr>
-        </thead>
-        <tbody v-for="table in stand.table" :key="table.position">
-          <tr>
-            <td class="col">{{ table.position }}.</td>
-            <td class="club" :title="table.team.name">
-              <router-link :to="'/team/' + table.team.id">
-                <span><img :src="table.team.crestUrl" alt=""/></span>
-                <span>{{ table.team.name }}</span>
-              </router-link>
-            </td>
-            <td class="col">{{ table.playedGames }}</td>
-            <td class="col">{{ table.won }}</td>
-            <td class="col">{{ table.draw }}</td>
-            <td class="col">{{ table.lost }}</td>
-            <td class="col">{{ table.goalsFor }}</td>
-            <td class="col">{{ table.goalsAgainst }}</td>
-            <td class="col">{{ table.goalDifference }}</td>
-            <td class="col">
-              <strong>{{ table.points }}</strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table">
+        <leaderboard-header></leaderboard-header>
+        <leaderboard-row
+          v-for="table in stand.table"
+          :key="table.position"
+          :table="table"
+        ></leaderboard-row>
+      </div>
     </div>
   </base-card>
 </template>
 
 <script>
+import LeaderboardHeader from "../components/leaderboard/LeaderboardHeader.vue";
+import LeaderboardRow from "../components/leaderboard/LeaderboardRow.vue";
 export default {
+  components: {
+    LeaderboardHeader,
+    LeaderboardRow,
+  },
   computed: {
     standings() {
       return this.$store.getters["lead/getStandings"];
@@ -76,61 +53,19 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.group_name {
   border-bottom: 2px solid #2c3e50;
   padding-top: 6px;
-}
-table {
-  width: 100%;
-  margin: auto;
-  text-align: center;
-  font-size: 1.5rem;
-  border-collapse: inherit;
-  border-spacing: 0;
-  padding: 0 10px 10px 10px;
-}
-table thead {
-  background-color: #fbfbfb;
-}
-
-table thead tr td {
-  padding: 5px 20px;
-}
-
-table tbody {
-  margin-bottom: 10px;
-}
-
-table tbody td {
-  padding: 5px 0;
-}
-.group_name {
+  padding-left: 10px;
+  width: calc(100% - 10px);
+  height: 20px;
   text-align: left;
-  font-size: 150%;
-}
-img {
-  width: 30px;
-  height: 30px;
-  background-color: transparent;
-  margin-right: 15px;
 }
 
-.col {
-  max-width: 30px;
-}
-
-.club {
-  min-width: 250px;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-
-a {
-  color: #2c3e50;
-  text-decoration: none;
+.table {
+  padding: 5px;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 .errorMessage {

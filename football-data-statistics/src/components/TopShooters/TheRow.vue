@@ -1,29 +1,32 @@
 <template>
   <div class="content">
-    <div>
+    <div class="badge">
       <img :src="image" :alt="title" :title="title" />
+      <span>{{ ali }}</span>
     </div>
-    <span>
+    <div class="description">
       <h3>{{ value }}</h3>
-    </span>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["image", "value", "title"],
+  props: ["image", "value", "title", "ali"],
 };
 </script>
 
 <style scoped>
 .content {
-  width: 100%;
-  height: 60px;
-}
-div {
   float: left;
-  height: 50px;
-  width: 50px;
+  width: 100%;
+  height: 20%;
+}
+.badge {
+  float: left;
+  height: 100%;
+  width: 30%;
+  background-color: #4ca1af;
 }
 img {
   height: 40px;
@@ -31,7 +34,12 @@ img {
   padding: 5px;
 }
 span {
-  float: left;
-  padding-left: 10px;
+  position: relative;
+  left: 10px;
+  bottom: 20px;
+  font-weight: 700;
+}
+.description {
+  width: 70%;
 }
 </style>

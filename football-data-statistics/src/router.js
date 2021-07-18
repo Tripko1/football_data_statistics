@@ -17,6 +17,7 @@ const router = createRouter({
     {
       path: "/leaderboard",
       name: "Leaderboard",
+      alias: "/",
       component: TheLeaderboard,
     },
     {

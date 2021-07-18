@@ -1,17 +1,36 @@
 import axios from "../../axios-instance";
 
-const loadShooters = (state) => {
+const loadShooters = (state, filter) => {
   const shooters = [];
   const start = (state.selectedPage - 1) * state.itemsPerPage;
   let end = start + state.itemsPerPage;
   if (end > state.totalCount) {
     end = state.totalCount;
   }
+  let arr = [];
+  if (filter === "filter") {
+    arr = state.filteredShooters;
+  } else {
+    arr = state.topShooters;
+    state.filteredMatches = [];
+  }
   for (let i = start; i < end; i++) {
-    const shooter = state.topShooters[i];
+    const shooter = arr[i];
     shooters.push(shooter);
   }
   state.shootersInView = shooters;
+};
+
+const setPagination = (state) => {
+  const num = state.totalCount % state.itemsPerPage;
+
+  if (num === 0) {
+    state.totalPages = state.totalCount / state.itemsPerPage;
+  } else if (num > 0) {
+    state.totalPages = state.totalCount / state.itemsPerPage + 1;
+  } else if (state.totalCount === 0) {
+    state.totalPages = 0;
+  }
 };
 
 export default {
@@ -20,6 +39,7 @@ export default {
     return {
       topShooters: [],
       shootersInView: [],
+      filteredShooters: [],
       totalCount: null,
       errorShooters: null,
       itemsPerPage: 15,
@@ -40,22 +60,16 @@ export default {
           .catch((error) => {
             throw new Error(`${error.response.data.message}`);
           });
-        state.topShooters = response.scorers;
-        state.errorShooters = null;
         state.selectedPage = 1;
         state.startPos = 1;
         state.totalCount = response.count;
+        state.topShooters = response.scorers;
+        state.errorShooters = null;
 
-        const num = state.totalCount % state.itemsPerPage;
-
-        if (num === 0) {
-          state.totalPages = state.totalCount / state.itemsPerPage;
-        } else {
-          state.totalPages = state.totalCount / state.itemsPerPage + 1;
-        }
-        loadShooters(state);
+        setPagination(state);
+        loadShooters(state, "no-filter");
       } catch (err) {
-        console.log(err);
+        state.errorShooters = err;
       }
     },
     increment(state, payload) {
@@ -73,7 +87,12 @@ export default {
     selectPage(state, payload) {
       const value = payload.value;
       state.selectedPage = value;
-      loadShooters(state);
+      const inputValue = payload.inputValue;
+      if (inputValue.length > 3) {
+        loadShooters(state, "filter");
+      } else {
+        loadShooters(state, "no-filter");
+      }
     },
     async setSelectedPlayer(state, payload) {
       try {
@@ -90,6 +109,47 @@ export default {
         console.log(err);
       }
     },
+    filterScorers(state, payload) {
+      const value = payload.value;
+      if (value.length > 3) {
+        const s = [];
+        state.topShooters.find((shooter) => {
+          const name = shooter.player.name !== null ? shooter.player.name : "";
+          const nationality =
+            shooter.player.nationality !== null
+              ? shooter.player.nationality
+              : "";
+          const position =
+            shooter.player.position !== null ? shooter.player.position : "";
+          const team = shooter.team.name !== null ? shooter.team.name : "";
+          if (
+            name.toLowerCase().includes(value) ||
+            nationality.toLowerCase().includes(value) ||
+            position.toLowerCase().includes(value) ||
+            team.toLowerCase().includes(value)
+          ) {
+            s.push(shooter);
+          }
+        });
+        state.filteredShooters = s;
+        state.totalCount = s.length;
+        setPagination(state);
+
+        if (state.totalPages < state.selectedPage) {
+          state.selectedPage = 1;
+          state.startPos = 1;
+        }
+        loadShooters(state, "filter");
+      } else {
+        state.totalCount = state.topShooters.length;
+        setPagination(state);
+        if (state.totalPages < state.selectedPage) {
+          state.selectedPage = 1;
+          state.startPos = 1;
+        }
+        loadShooters(state, "no-filter");
+      }
+    },
   },
   actions: {
     loadTopShooters(context, payload) {
@@ -102,10 +162,19 @@ export default {
       context.commit("decrement", payload);
     },
     selectPage(context, payload) {
-      context.commit("selectPage", payload);
+      const inputValue = payload.inputValue;
+      if (inputValue.length > 3) {
+        context.commit("filterScorers", { value: inputValue });
+        context.commit("selectPage", payload);
+      } else {
+        context.commit("selectPage", payload);
+      }
     },
     setSelectedPlayer(context, payload) {
       context.commit("setSelectedPlayer", payload);
+    },
+    filterScorers(context, payload) {
+      context.commit("filterScorers", payload);
     },
   },
   getters: {

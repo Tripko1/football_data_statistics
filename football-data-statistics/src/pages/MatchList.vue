@@ -1,60 +1,38 @@
 <template>
   <base-card>
-    <div class="search">Search</div>
-    <div class="matches">
-      <table>
-        <thead>
-          <tr>
-            <th>Matchday</th>
-            <th>Home Team</th>
-            <th>Result</th>
-            <th>Away Team</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody v-if="matches">
-          <tr v-for="match in matches" :key="match.id">
-            <td class="col">{{ match.matchday }}</td>
-
-            <td class="teamName_home">
-              <router-link :to="'/team/' + match.homeTeam.id">
-                <span>{{ match.homeTeam.name }}</span>
-              </router-link>
-            </td>
-
-            <td :class="getResultClass(match.score.fullTime.homeTeam)">
-              <span
-                >{{ match.score.fullTime.homeTeam }} -
-                {{ match.score.fullTime.awayTeam }}</span
-              >
-              <aside class="aside" v-if="match.score.penalties.homeTeam">
-                <span>
-                  ({{ match.score.penalties.homeTeam }} -
-                  {{ match.score.penalties.awayTeam }})
-                </span>
-              </aside>
-            </td>
-
-            <td class="teamName_away">
-              <router-link :to="'/team/' + match.awayTeam.id">
-                <span>{{ match.awayTeam.name }}</span>
-              </router-link>
-            </td>
-
-            <td class="date">{{ match.utcDate.split("T")[0] }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="search-container">
+      <the-search @search-value="searchValue"></the-search>
     </div>
-    <the-pagination></the-pagination>
+    <div class="matches">
+      <div class="table" v-if="matches">
+        <table-header></table-header>
+        <table-row
+          v-for="match in matches"
+          :key="match.id"
+          :match="match"
+        ></table-row>
+      </div>
+    </div>
+    <the-pagination :inputValue="inputValue"></the-pagination>
   </base-card>
 </template>
 
 <script>
 import ThePagination from "../components/matches/ThePagination.vue";
+import TheSearch from "../components/Search/TheSearch.vue";
+import TableHeader from "../components/matches/TableHeader.vue";
+import TableRow from "../components/matches/TableRow.vue";
 export default {
   components: {
+    TableRow,
     ThePagination,
+    TheSearch,
+    TableHeader,
+  },
+  data() {
+    return {
+      inputValue: "",
+    };
   },
   computed: {
     selectedId() {
@@ -65,11 +43,8 @@ export default {
     },
   },
   methods: {
-    getResultClass(arg) {
-      if (arg !== null) {
-        return "result finished";
-      }
-      return "result";
+    searchValue(input) {
+      this.inputValue = input;
     },
   },
   created() {
@@ -79,76 +54,41 @@ export default {
 </script>
 
 <style scoped>
-.search {
+.search-container {
+  width: 100%;
   height: 50px;
 }
 .matches {
-  height: calc(100% - 120px);
+  height: calc(100% - 140px);
+  width: 100%;
   overflow-y: auto;
   overflow-x: auto;
 }
-table {
-  width: calc(100% - 20px);
-  margin: auto;
-  text-align: center;
-  font-size: 1.5rem;
-  border-spacing: 0;
-  margin: 0 10px 10px 10px;
-}
-table thead {
-  background-color: #fbfbfb;
+
+.table {
+  padding: 5px;
+  height: calc(100% - 10px);
 }
 
-.teamName_home {
-  min-width: 250px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  padding: 2px;
-  border-bottom: 1px solid #2c3e50;
-}
-.teamName_away {
-  min-width: 250px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  padding: 2px;
-  border-bottom: 1px solid #2c3e50;
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
 }
 
-a {
-  color: #2c3e50;
-  text-decoration: none;
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
 }
 
-.date {
-  min-width: 100px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.col {
-  max-width: 20px;
-  text-align: center;
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(96, 96, 96);
+  border-radius: 10px;
 }
 
-.result {
-  min-width: 30px;
-  text-align: center;
-}
-
-.finished {
-  border: 1px solid black;
-  border-radius: 5px;
-}
-
-.aside {
-  width: 100%;
-  display: table;
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(96, 96, 96) rgb(169, 169, 169);
 }
 </style>
