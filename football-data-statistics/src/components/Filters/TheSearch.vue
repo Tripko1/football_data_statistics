@@ -13,6 +13,7 @@
 
 <script>
 export default {
+  props: ["selectValue"],
   data() {
     return {
       search: require("../../assets/search.png"),
@@ -26,10 +27,12 @@ export default {
       if (this.$route.fullPath === "/matches") {
         this.$store.dispatch("match/filterMatches", {
           value: this.searchValue,
+          selectValue: this.selectValue,
         });
       } else if (this.$route.fullPath === "/topshooters") {
         this.$store.dispatch("top/filterScorers", {
           value: this.searchValue,
+          // selectValue: this.selectValue,
         });
       }
     },
@@ -67,7 +70,7 @@ export default {
   width: 30px;
   height: 30px;
   font-size: 20px;
-  margin-top: 3px;
+  margin-top: 10px;
   right: calc(50% - 196px);
 }
 </style>

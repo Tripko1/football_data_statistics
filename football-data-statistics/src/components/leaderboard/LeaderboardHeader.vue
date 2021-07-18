@@ -21,6 +21,7 @@
   height: 40px;
   background-color: #fbfbfb;
   border-radius: 12px;
+  border-top: 7px solid #4ca1af;
 }
 .field {
   float: left;
