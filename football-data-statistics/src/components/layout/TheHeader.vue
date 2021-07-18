@@ -17,7 +17,7 @@
               <router-link to="/matches">MATCHES</router-link>
             </li>
             <li>
-              <router-link to="/topshooters">TOP SHOOTER</router-link>
+              <router-link to="/topshooters">TOP SHOOTERS</router-link>
             </li>
           </ul>
         </nav>
@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      hamburger: require("../../assets/menu.svg"),
+      hamburger: require("../../assets/menu.png"),
     };
   },
   computed: {
@@ -92,7 +92,7 @@ img:hover {
   width: calc(100% - 80px);
 }
 .title {
-  color: black;
+  color: wheat;
   float: left;
   font-size: 24px;
   font-weight: bold;

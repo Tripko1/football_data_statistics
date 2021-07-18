@@ -37,10 +37,14 @@ export default {
           path: this.$route.fullPath,
         })
         .then(() => {
-          if (this.$route === "/leaderboard") {
+          if (this.$route.fullPath === "/leaderboard") {
             return this.$router.push("/leaderboard");
-          } else if (this.$route === "/matches") {
+          } else if (this.$route.fullPath === "/matches") {
             return this.$router.push("/matches");
+          } else if (this.$route.fullPath === "/topshooters") {
+            return this.$router.push("/topshooters");
+          } else {
+            return this.$router.push("/leaderboard");
           }
         });
     },

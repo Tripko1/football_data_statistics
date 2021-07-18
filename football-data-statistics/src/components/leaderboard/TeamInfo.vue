@@ -191,6 +191,9 @@ h1 {
 .center-left {
   display: flex;
   padding: 15px 0 0 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-decoration: none;
 }
 a {

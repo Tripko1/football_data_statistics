@@ -1,17 +1,36 @@
 import axios from "../../axios-instance";
 
-const loadMatches = (state) => {
+const loadMatches = (state, filter) => {
   const matches = [];
   const start = (state.selectedPage - 1) * state.itemsPerPage;
   let end = start + state.itemsPerPage;
   if (end > state.totalCount) {
     end = state.totalCount;
   }
+  let arr = [];
+  if (filter === "filter") {
+    arr = state.filteredMatches;
+  } else {
+    arr = state.matches;
+    state.filteredMatches = [];
+  }
   for (let i = start; i < end; i++) {
-    const match = state.matches[i];
+    const match = arr[i];
     matches.push(match);
   }
   state.matchesInView = matches;
+};
+
+const setPagintation = (state) => {
+  const num = state.totalCount % state.itemsPerPage;
+
+  if (num === 0) {
+    state.totalPages = state.totalCount / state.itemsPerPage;
+  } else if (num > 0) {
+    state.totalPages = state.totalCount / state.itemsPerPage + 1;
+  } else if (state.totalCount === 0) {
+    state.totalPages = 0;
+  }
 };
 
 export default {
@@ -20,6 +39,7 @@ export default {
     return {
       matches: [],
       matchesInView: [],
+      filteredMatches: [],
       totalCount: null,
       errorMatches: null,
       itemsPerPage: 15,
@@ -44,15 +64,8 @@ export default {
         state.totalCount = response.count;
         state.matches = response.matches;
         state.errorMatches = null;
-        const num = state.totalCount % state.itemsPerPage;
-
-        if (num === 0) {
-          state.totalPages = state.totalCount / state.itemsPerPage;
-        } else {
-          state.totalPages = state.totalCount / state.itemsPerPage + 1;
-        }
-
-        loadMatches(state);
+        setPagintation(state);
+        loadMatches(state, "no-filter");
       } catch (err) {
         state.errorMatches = err;
       }
@@ -72,7 +85,43 @@ export default {
     selectPage(state, payload) {
       const value = payload.value;
       state.selectedPage = value;
-      loadMatches(state);
+      const inputValue = payload.inputValue;
+      if (inputValue.length > 3) {
+        loadMatches(state, "filter");
+      } else {
+        loadMatches(state, "no-filter");
+      }
+    },
+    filterMatches(state, payload) {
+      const value = payload.value;
+      if (value.length > 3) {
+        const m = [];
+        state.matches.find((match) => {
+          if (
+            match.awayTeam.name.toLowerCase().includes(value) ||
+            match.homeTeam.name.toLowerCase().includes(value)
+          ) {
+            m.push(match);
+          }
+        });
+        state.filteredMatches = m;
+        state.totalCount = m.length;
+        setPagintation(state);
+
+        if (state.totalPages < state.selectedPage) {
+          state.selectedPage = 1;
+          state.startPos = 1;
+        }
+        loadMatches(state, "filter");
+      } else {
+        state.totalCount = state.matches.length;
+        setPagintation(state);
+        if (state.totalPages < state.selectedPage) {
+          state.selectedPage = 1;
+          state.startPos = 1;
+        }
+        loadMatches(state, "no-filter");
+      }
     },
   },
   actions: {
@@ -86,7 +135,16 @@ export default {
       context.commit("decrement", payload);
     },
     selectPage(context, payload) {
-      context.commit("selectPage", payload);
+      const inputValue = payload.inputValue;
+      if (inputValue.length > 3) {
+        context.commit("filterMatches", { value: inputValue });
+        context.commit("selectPage", payload);
+      } else {
+        context.commit("selectPage", payload);
+      }
+    },
+    filterMatches(context, payload) {
+      context.commit("filterMatches", payload);
     },
   },
   getters: {
