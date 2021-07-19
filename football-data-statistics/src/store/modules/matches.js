@@ -110,7 +110,9 @@ export default {
         state.matches.find((match) => {
           if (
             match.awayTeam.name.toLowerCase().includes(searchValue) ||
-            match.homeTeam.name.toLowerCase().includes(searchValue)
+            match.homeTeam.name.toLowerCase().includes(searchValue) ||
+            match.awayTeam.name.toUpperCase().includes(searchValue) ||
+            match.homeTeam.name.toUpperCase().includes(searchValue)
           ) {
             if (selectValue === -1) {
               m.push(match);
@@ -187,6 +189,9 @@ export default {
     },
     getAllMatches(state) {
       return state.matches;
+    },
+    getErrorMatches(state) {
+      return state.errorMatches;
     },
   },
 };

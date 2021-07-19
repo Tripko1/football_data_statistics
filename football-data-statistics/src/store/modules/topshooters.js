@@ -131,9 +131,10 @@ export default {
           .catch((error) => {
             throw new Error(`${error.response.data.message}`);
           });
+        state.errorShooters = null;
         state.selectedPlayer = response;
       } catch (err) {
-        console.log(err);
+        state.errorShooters = err;
       }
     },
     filterScorers(state, payload) {
@@ -161,7 +162,11 @@ export default {
             name.toLowerCase().includes(searchValue) ||
             nationality.toLowerCase().includes(searchValue) ||
             position.toLowerCase().includes(searchValue) ||
-            team.toLowerCase().includes(searchValue)
+            team.toLowerCase().includes(searchValue) ||
+            name.toUpperCase().includes(searchValue) ||
+            nationality.toUpperCase().includes(searchValue) ||
+            position.toUpperCase().includes(searchValue) ||
+            team.toUpperCase().includes(searchValue)
           ) {
             s.push(shooter);
           }
@@ -223,6 +228,9 @@ export default {
     },
     getTopShooters(state) {
       return state.topShooters;
+    },
+    getErrorShooters(state) {
+      return state.errorShooters;
     },
   },
 };

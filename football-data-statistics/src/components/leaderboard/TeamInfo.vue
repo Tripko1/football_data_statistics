@@ -1,76 +1,79 @@
 <template>
   <base-card v-if="selectedTeam">
-    <div
-      class="container"
-      :style="{
-        'background-color': color1.split(' ').length > 2 ? 'white' : color1,
-        color: color1.split(' ').length > 2 ? '#2c3e50;' : color2,
-      }"
-    >
-      <span class="back" @click="goBack">
-        <img class="left_arrow" :src="leftArrow" alt="Back" />
-      </span>
-      <div class="badge">
-        <div class="circle">
-          <img
-            v-if="selectedTeam.crestUrl"
-            class="crest"
-            :src="selectedTeam.crestUrl"
-            alt=""
-          />
+    <div v-if="error" class="errorMessage">{{ error }}</div>
+    <div v-else>
+      <div
+        class="container"
+        :style="{
+          'background-color': color1.split(' ').length > 2 ? 'white' : color1,
+          color: color1.split(' ').length > 2 ? '#2c3e50;' : color2,
+        }"
+      >
+        <span class="back" @click="goBack">
+          <img class="left_arrow" :src="leftArrow" alt="Back" />
+        </span>
+        <div class="badge">
+          <div class="circle">
+            <img
+              v-if="selectedTeam.crestUrl"
+              class="crest"
+              :src="selectedTeam.crestUrl"
+              alt=""
+            />
+          </div>
+        </div>
+        <div class="info">
+          <div class="content">
+            <span>
+              <h1>{{ selectedTeam.name }}</h1>
+            </span>
+          </div>
+          <div class="content">
+            <span class="left">
+              <img class="smallImg" :src="stadium" alt="stadium" />
+              <span class="center-left">
+                <strong>{{ selectedTeam.venue }}</strong>
+              </span>
+            </span>
+            <span class="left">
+              <img class="smallImg" :src="phone" alt="stadium" />
+              <span class="center-left">
+                <strong>{{ selectedTeam.phone }}</strong>
+              </span>
+            </span>
+          </div>
+          <div class="content">
+            <span class="left">
+              <img class="smallImg" :src="web" alt="stadium" />
+              <a
+                class="center-left"
+                :href="selectedTeam.website"
+                style="textDecoration: none"
+              >
+                <strong>{{ selectedTeam.website }}</strong>
+              </a>
+            </span>
+            <span class="left">
+              <img class="smallImg" :src="address" alt="stadium" />
+              <span class="center-left">
+                <strong>{{ selectedTeam.address }}</strong>
+              </span>
+            </span>
+          </div>
         </div>
       </div>
-      <div class="info">
-        <div class="content">
-          <span>
-            <h1>{{ selectedTeam.name }}</h1>
-          </span>
+      <div v-if="selectedTeam.squad.length > 0" class="players">
+        <div class="player" v-for="s in selectedTeam.squad" :key="s.id">
+          <router-link :to="'/player/' + s.id">
+            <football-kit
+              :playerName="s.name"
+              :shirtNumber="s.shirtNumber"
+              :role="s.role"
+              :color1="color1"
+              :color2="color2"
+            ></football-kit>
+          </router-link>
         </div>
-        <div class="content">
-          <span class="left">
-            <img class="smallImg" :src="stadium" alt="stadium" />
-            <span class="center-left">
-              <strong>{{ selectedTeam.venue }}</strong>
-            </span>
-          </span>
-          <span class="left">
-            <img class="smallImg" :src="phone" alt="stadium" />
-            <span class="center-left">
-              <strong>{{ selectedTeam.phone }}</strong>
-            </span>
-          </span>
-        </div>
-        <div class="content">
-          <span class="left">
-            <img class="smallImg" :src="web" alt="stadium" />
-            <a
-              class="center-left"
-              :href="selectedTeam.website"
-              style="textDecoration: none"
-            >
-              <strong>{{ selectedTeam.website }}</strong>
-            </a>
-          </span>
-          <span class="left">
-            <img class="smallImg" :src="address" alt="stadium" />
-            <span class="center-left">
-              <strong>{{ selectedTeam.address }}</strong>
-            </span>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div v-if="selectedTeam.squad.length > 0" class="players">
-      <div class="player" v-for="s in selectedTeam.squad" :key="s.id">
-        <router-link :to="'/player/' + s.id">
-          <football-kit
-            :playerName="s.name"
-            :shirtNumber="s.shirtNumber"
-            :role="s.role"
-            :color1="color1"
-            :color2="color2"
-          ></football-kit>
-        </router-link>
       </div>
     </div>
   </base-card>
@@ -103,6 +106,9 @@ export default {
     },
     color2() {
       return this.$store.getters["lead/getColor2"];
+    },
+    error() {
+      return this.$store.getters["lead/getError"];
     },
   },
   methods: {
@@ -208,6 +214,11 @@ a {
 .player {
   width: 20%;
   float: left;
+}
+.errorMessage {
+  padding-top: 40px;
+  color: #2c3e50;
+  font-size: 30px;
 }
 /* width */
 ::-webkit-scrollbar {

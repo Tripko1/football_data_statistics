@@ -1,38 +1,41 @@
 <template>
   <base-card>
-    <div class="search-container">
-      <div class="filter-left">
-        <div class="half">Most Goals</div>
-        <div class="half">
-          <select-filter
-            @select-value="selectedValue"
-            :searchValue="inputValue"
-          ></select-filter>
+    <div v-if="error" class="errorMessage">{{ error }}</div>
+    <div v-else>
+      <div class="search-container">
+        <div class="filter-left">
+          <div class="half">Most Goals</div>
+          <div class="half">
+            <select-filter
+              @select-value="selectedValue"
+              :searchValue="inputValue"
+            ></select-filter>
+          </div>
+        </div>
+        <the-search
+          @search-value="searchValue"
+          :selectValue="selectValue"
+        ></the-search>
+        <div class="filter-right">
+          <div class="half"></div>
+          <div class="half"></div>
         </div>
       </div>
-      <the-search
-        @search-value="searchValue"
+      <div class="matches">
+        <div class="table" v-if="matches">
+          <table-header></table-header>
+          <table-row
+            v-for="match in matches"
+            :key="match.id"
+            :match="match"
+          ></table-row>
+        </div>
+      </div>
+      <the-pagination
+        :inputValue="inputValue"
         :selectValue="selectValue"
-      ></the-search>
-      <div class="filter-right">
-        <div class="half"></div>
-        <div class="half"></div>
-      </div>
+      ></the-pagination>
     </div>
-    <div class="matches">
-      <div class="table" v-if="matches">
-        <table-header></table-header>
-        <table-row
-          v-for="match in matches"
-          :key="match.id"
-          :match="match"
-        ></table-row>
-      </div>
-    </div>
-    <the-pagination
-      :inputValue="inputValue"
-      :selectValue="selectValue"
-    ></the-pagination>
   </base-card>
 </template>
 
@@ -68,6 +71,9 @@ export default {
     },
     selectedPage() {
       return this.$store.getters["match/getSelectedPage"];
+    },
+    error() {
+      return this.$store.getters["match/getErrorMatches"];
     },
   },
   watch: {
@@ -129,6 +135,12 @@ export default {
 .half {
   width: 100%;
   height: 25px;
+}
+
+.errorMessage {
+  padding-top: 40px;
+  color: #2c3e50;
+  font-size: 30px;
 }
 
 /* width */
