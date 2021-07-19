@@ -63,6 +63,20 @@ export default {
     matches() {
       return this.$store.getters["match/getMatchesInView"];
     },
+    allMatches() {
+      return this.$store.getters["match/getAllMatches"];
+    },
+    selectedPage() {
+      return this.$store.getters["match/getSelectedPage"];
+    },
+  },
+  watch: {
+    allMatches() {
+      return this.$store.dispatch("match/filterMatches", {
+        selectValue: this.selectValue,
+        searchValue: this.inputValue,
+      });
+    },
   },
   methods: {
     searchValue(input) {
