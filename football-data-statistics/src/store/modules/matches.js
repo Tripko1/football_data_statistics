@@ -109,10 +109,12 @@ export default {
       if (searchValue.length > 3) {
         state.matches.find((match) => {
           if (
-            match.awayTeam.name.toLowerCase().includes(searchValue) ||
-            match.homeTeam.name.toLowerCase().includes(searchValue) ||
-            match.awayTeam.name.toUpperCase().includes(searchValue) ||
-            match.homeTeam.name.toUpperCase().includes(searchValue)
+            match.awayTeam.name
+              .toLowerCase()
+              .includes(searchValue.toLowerCase()) ||
+            match.homeTeam.name
+              .toLowerCase()
+              .includes(searchValue.toLowerCase())
           ) {
             if (selectValue === -1) {
               m.push(match);

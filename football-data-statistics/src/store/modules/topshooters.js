@@ -159,14 +159,10 @@ export default {
           const team = shooter.team.name !== null ? shooter.team.name : "";
 
           if (
-            name.toLowerCase().includes(searchValue) ||
-            nationality.toLowerCase().includes(searchValue) ||
-            position.toLowerCase().includes(searchValue) ||
-            team.toLowerCase().includes(searchValue) ||
-            name.toUpperCase().includes(searchValue) ||
-            nationality.toUpperCase().includes(searchValue) ||
-            position.toUpperCase().includes(searchValue) ||
-            team.toUpperCase().includes(searchValue)
+            name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            nationality.toLowerCase().includes(searchValue.toLowerCase()) ||
+            position.toLowerCase().includes(searchValue.toLowerCase()) ||
+            team.toLowerCase().includes(searchValue.toLowerCase())
           ) {
             s.push(shooter);
           }
