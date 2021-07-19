@@ -1,7 +1,23 @@
 <template>
   <base-card>
     <div class="search-container">
-      <the-search @search-value="searchValue"></the-search>
+      <div class="filter-left">
+        <div class="half">Sort Scorer</div>
+        <div class="half">
+          <sort-scorer
+            @select-value="selectedValue"
+            :searchValue="inputValue"
+          ></sort-scorer>
+        </div>
+      </div>
+      <the-search
+        @search-value="searchValue"
+        :selectValue="selectValue"
+      ></the-search>
+      <div class="filter-right">
+        <div class="half"></div>
+        <div class="half"></div>
+      </div>
     </div>
     <div class="container">
       <div class="table" v-if="scorers.length > 0">
@@ -21,7 +37,8 @@
     </div>
     <the-pagination
       v-if="scorers.length > 0"
-      :inputValue="inputValue"
+      :searchValue="inputValue"
+      :selectValue="selectValue"
     ></the-pagination>
   </base-card>
 </template>
@@ -31,16 +48,19 @@ import ThePagination from "../components/TopShooters/ThePagination.vue";
 import TheSearch from "../components/Filters/TheSearch.vue";
 import ScorerHeader from "../components/TopShooters/ScorerHeader.vue";
 import ScorerRow from "../components/TopShooters/ScorerRow.vue";
+import SortScorer from "../components/Filters/SortScorer.vue";
 export default {
   components: {
     ThePagination,
     TheSearch,
     ScorerHeader,
     ScorerRow,
+    SortScorer,
   },
   data() {
     return {
       inputValue: "",
+      selectValue: "",
     };
   },
   computed: {
@@ -50,10 +70,24 @@ export default {
     scorers() {
       return this.$store.getters["top/getShootersInView"];
     },
+    topShooters() {
+      return this.$store.getters["top/getTopShooters"];
+    },
+  },
+  watch: {
+    topShooters() {
+      this.$store.dispatch("top/filterScorers", {
+        searchValue: this.inputValue,
+        selectValue: this.selectValue,
+      });
+    },
   },
   methods: {
     searchValue(input) {
       this.inputValue = input;
+    },
+    selectedValue(value) {
+      this.selectValue = value;
     },
   },
   created() {
@@ -66,6 +100,7 @@ export default {
 .search-container {
   width: 100%;
   height: 50px;
+  display: inline-flex;
 }
 .container {
   height: calc(100% - 140px);
@@ -84,6 +119,27 @@ export default {
   color: #2c3e50;
   font-size: 1.5rem;
   font-weight: 800;
+}
+
+.filter-left {
+  float: left;
+  width: 150px;
+  min-width: 50px;
+  height: 50px;
+  background-color: transparent;
+}
+
+.filter-right {
+  float: right;
+  width: 150px;
+  min-width: 50px;
+  height: 50px;
+  background-color: transparent;
+}
+
+.half {
+  width: 100%;
+  height: 25px;
 }
 
 /* width */

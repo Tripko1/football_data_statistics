@@ -31,8 +31,8 @@ export default {
         });
       } else if (this.$route.fullPath === "/topshooters") {
         this.$store.dispatch("top/filterScorers", {
-          value: this.searchValue,
-          // selectValue: this.selectValue,
+          searchValue: this.searchValue,
+          selectValue: this.selectValue,
         });
       }
     },
