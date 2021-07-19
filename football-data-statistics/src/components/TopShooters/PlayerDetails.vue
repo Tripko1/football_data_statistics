@@ -3,7 +3,8 @@
     <span class="back" @click="goBack">
       <img class="left_arrow" :src="leftArrow" alt="Back" />
     </span>
-    <div class="container">
+    <div v-if="error" class="errorMessage">{{ error }}</div>
+    <div v-else class="container">
       <div class="half-container">
         <div class="quater-container">
           <div class="name">
@@ -77,6 +78,9 @@ export default {
   computed: {
     selectedPlayer() {
       return this.$store.getters["top/getSelectedPlayer"];
+    },
+    error() {
+      return this.$store.getters["top/getErrorShooters"];
     },
   },
   methods: {
@@ -180,6 +184,11 @@ export default {
 .picture {
   height: calc(100% - 60px);
   width: 100%;
+}
+.errorMessage {
+  padding-top: 40px;
+  color: #2c3e50;
+  font-size: 30px;
 }
 img {
   height: 100%;

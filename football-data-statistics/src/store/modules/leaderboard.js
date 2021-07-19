@@ -17,9 +17,7 @@ export default {
           .get(url)
           .then((res) => res.data)
           .catch((error) => {
-            if (error.response.status === 404) {
-              throw new Error(`${error.response.data.message}`);
-            }
+            throw new Error(`${error.response.data.message}`);
           });
         state.standings = response.standings;
         state.error = null;
@@ -37,9 +35,10 @@ export default {
           .catch((error) => {
             throw new Error(`${error.response.data.message}`);
           });
+        state.error = null;
         state.selectedTeam = response;
       } catch (err) {
-        console.log(err);
+        state.error = err;
       }
     },
   },

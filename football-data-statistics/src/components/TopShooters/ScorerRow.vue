@@ -50,7 +50,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 1.1rem;
-  padding: 5px 0;
+  padding: 3px 0;
 }
 .small-field {
   width: 15%;

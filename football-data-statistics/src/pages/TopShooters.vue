@@ -1,45 +1,48 @@
 <template>
   <base-card>
-    <div class="search-container">
-      <div class="filter-left">
-        <div class="half">Sort Scorer</div>
-        <div class="half">
-          <sort-scorer
-            @select-value="selectedValue"
-            :searchValue="inputValue"
-          ></sort-scorer>
+    <div v-if="error" class="errorMessage">{{ error }}</div>
+    <section v-else>
+      <div class="search-container">
+        <div class="filter-left">
+          <div class="half">Sort Scorer</div>
+          <div class="half">
+            <sort-scorer
+              @select-value="selectedValue"
+              :searchValue="inputValue"
+            ></sort-scorer>
+          </div>
+        </div>
+        <the-search
+          @search-value="searchValue"
+          :selectValue="selectValue"
+        ></the-search>
+        <div class="filter-right">
+          <div class="half"></div>
+          <div class="half"></div>
         </div>
       </div>
-      <the-search
-        @search-value="searchValue"
+      <div class="container">
+        <div class="table" v-if="scorers.length > 0">
+          <scorer-header></scorer-header>
+          <scorer-row
+            v-for="player in scorers"
+            :key="player.player.id"
+            :player="player"
+          ></scorer-row>
+        </div>
+        <div v-else>
+          <scorer-header></scorer-header>
+          <div class="no-data">
+            Currently don't have data for scorers...
+          </div>
+        </div>
+      </div>
+      <the-pagination
+        v-if="scorers.length > 0"
+        :searchValue="inputValue"
         :selectValue="selectValue"
-      ></the-search>
-      <div class="filter-right">
-        <div class="half"></div>
-        <div class="half"></div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="table" v-if="scorers.length > 0">
-        <scorer-header></scorer-header>
-        <scorer-row
-          v-for="player in scorers"
-          :key="player.player.id"
-          :player="player"
-        ></scorer-row>
-      </div>
-      <div v-else>
-        <scorer-header></scorer-header>
-        <div class="no-data">
-          Currently don't have data for scorers...
-        </div>
-      </div>
-    </div>
-    <the-pagination
-      v-if="scorers.length > 0"
-      :searchValue="inputValue"
-      :selectValue="selectValue"
-    ></the-pagination>
+      ></the-pagination>
+    </section>
   </base-card>
 </template>
 
@@ -72,6 +75,9 @@ export default {
     },
     topShooters() {
       return this.$store.getters["top/getTopShooters"];
+    },
+    error() {
+      return this.$store.getters["top/getErrorShooters"];
     },
   },
   watch: {
@@ -140,6 +146,17 @@ export default {
 .half {
   width: 100%;
   height: 25px;
+}
+
+.errorMessage {
+  padding-top: 40px;
+  color: #2c3e50;
+  font-size: 30px;
+}
+
+.cont {
+  padding: 0;
+  margin: 0;
 }
 
 /* width */
