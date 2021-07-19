@@ -1,7 +1,7 @@
 <template>
   <base-card>
     <div v-if="error" class="errorMessage">{{ error }}</div>
-    <section v-else>
+    <section v-else style="height: 100%">
       <div class="search-container">
         <div class="filter-left">
           <div class="half">Sort Scorer</div>

@@ -1,7 +1,7 @@
 <template>
   <base-card v-if="selectedTeam">
     <div v-if="error" class="errorMessage">{{ error }}</div>
-    <div v-else>
+    <div v-else style="height: 100%">
       <div
         class="container"
         :style="{
