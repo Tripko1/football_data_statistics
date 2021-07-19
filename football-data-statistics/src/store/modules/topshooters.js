@@ -24,13 +24,41 @@ const loadShooters = (state, filter) => {
 const setPagination = (state) => {
   const num = state.totalCount % state.itemsPerPage;
 
-  if (num === 0) {
+  if (state.totalCount === 0) {
+    state.totalPages = 0;
+  } else if (num === 0) {
     state.totalPages = state.totalCount / state.itemsPerPage;
   } else if (num > 0) {
     state.totalPages = state.totalCount / state.itemsPerPage + 1;
-  } else if (state.totalCount === 0) {
-    state.totalPages = 0;
   }
+
+  if (state.selectedPage > state.totalPages) {
+    state.selectedPage = 1;
+    state.startPos = 1;
+  }
+};
+
+const sortScorer = (state, arr, selectValue) => {
+  const n = arr.length;
+  if (n > 0) {
+    if (selectValue === 1 && arr[0].numberOfGoals > arr[n - 1].numberOfGoals) {
+      for (let i = 0; i < n / 2; i++) {
+        const pom = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = pom;
+      }
+    }
+
+    if (selectValue === 0 && arr[0].numberOfGoals < arr[n - 1].numberOfGoals) {
+      for (let i = 0; i < n / 2; i++) {
+        const pom = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = pom;
+      }
+    }
+  }
+  state.filteredShooters = arr;
+  loadShooters(state, "filter");
 };
 
 export default {
@@ -87,8 +115,7 @@ export default {
     selectPage(state, payload) {
       const value = payload.value;
       state.selectedPage = value;
-      const inputValue = payload.inputValue;
-      if (inputValue.length > 3) {
+      if (state.filteredShooters.length > 0) {
         loadShooters(state, "filter");
       } else {
         loadShooters(state, "no-filter");
@@ -110,9 +137,16 @@ export default {
       }
     },
     filterScorers(state, payload) {
-      const value = payload.value;
-      if (value.length > 3) {
-        const s = [];
+      const searchValue = payload.searchValue;
+      let selectValue = payload.selectValue;
+
+      if (selectValue === "") {
+        selectValue = 0;
+      } else {
+        selectValue = +selectValue;
+      }
+      let s = [];
+      if (searchValue.length > 3) {
         state.topShooters.find((shooter) => {
           const name = shooter.player.name !== null ? shooter.player.name : "";
           const nationality =
@@ -122,32 +156,23 @@ export default {
           const position =
             shooter.player.position !== null ? shooter.player.position : "";
           const team = shooter.team.name !== null ? shooter.team.name : "";
+
           if (
-            name.toLowerCase().includes(value) ||
-            nationality.toLowerCase().includes(value) ||
-            position.toLowerCase().includes(value) ||
-            team.toLowerCase().includes(value)
+            name.toLowerCase().includes(searchValue) ||
+            nationality.toLowerCase().includes(searchValue) ||
+            position.toLowerCase().includes(searchValue) ||
+            team.toLowerCase().includes(searchValue)
           ) {
             s.push(shooter);
           }
         });
-        state.filteredShooters = s;
         state.totalCount = s.length;
         setPagination(state);
-
-        if (state.totalPages < state.selectedPage) {
-          state.selectedPage = 1;
-          state.startPos = 1;
-        }
-        loadShooters(state, "filter");
+        sortScorer(state, s, selectValue);
       } else {
         state.totalCount = state.topShooters.length;
         setPagination(state);
-        if (state.totalPages < state.selectedPage) {
-          state.selectedPage = 1;
-          state.startPos = 1;
-        }
-        loadShooters(state, "no-filter");
+        sortScorer(state, state.topShooters, selectValue);
       }
     },
   },
@@ -162,13 +187,8 @@ export default {
       context.commit("decrement", payload);
     },
     selectPage(context, payload) {
-      const inputValue = payload.inputValue;
-      if (inputValue.length > 3) {
-        context.commit("filterScorers", { value: inputValue });
-        context.commit("selectPage", payload);
-      } else {
-        context.commit("selectPage", payload);
-      }
+      context.commit("filterScorers", payload);
+      context.commit("selectPage", payload);
     },
     setSelectedPlayer(context, payload) {
       context.commit("setSelectedPlayer", payload);
@@ -200,6 +220,9 @@ export default {
     },
     getSelectedPlayer(state) {
       return state.selectedPlayer;
+    },
+    getTopShooters(state) {
+      return state.topShooters;
     },
   },
 };
