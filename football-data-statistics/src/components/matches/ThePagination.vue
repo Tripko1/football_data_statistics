@@ -34,7 +34,7 @@ export default {
     selectPage(value) {
       this.$store.dispatch("match/selectPage", {
         value: value,
-        inputValue: this.inputValue,
+        searchValue: this.inputValue,
         selectValue: this.selectValue,
       });
     },

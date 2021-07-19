@@ -26,7 +26,7 @@ export default {
       this.$emit("search-value", this.searchValue);
       if (this.$route.fullPath === "/matches") {
         this.$store.dispatch("match/filterMatches", {
-          value: this.searchValue,
+          searchValue: this.searchValue,
           selectValue: this.selectValue,
         });
       } else if (this.$route.fullPath === "/topshooters") {
